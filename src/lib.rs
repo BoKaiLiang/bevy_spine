@@ -10,6 +10,7 @@ use std::{
 
 use bevy::{
     asset::load_internal_binary_asset,
+    log,
     prelude::*,
     render::{
         mesh::{Indices, MeshVertexAttribute},
@@ -559,7 +560,8 @@ fn spine_load(
                             Ok(skeleton_data) => {
                                 *status = SkeletonDataStatus::Loaded(Arc::new(skeleton_data));
                             }
-                            Err(_err) => {
+                            Err(err) => {
+                                log::error!("{:?}", err);
                                 *status = SkeletonDataStatus::Failed;
                                 continue;
                             }
@@ -576,8 +578,8 @@ fn spine_load(
                             Ok(skeleton_data) => {
                                 *status = SkeletonDataStatus::Loaded(Arc::new(skeleton_data));
                             }
-                            Err(_err) => {
-                                // TODO: print error?
+                            Err(err) => {
+                                log::error!("{:?}", err);
                                 *status = SkeletonDataStatus::Failed;
                                 continue;
                             }
