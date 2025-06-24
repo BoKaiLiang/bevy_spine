@@ -55,8 +55,8 @@ fn fragment(
         ((tex_color.a - 1.0) * input.dark_color.a + 1.0 - tex_color.rgb) * input.dark_color.rgb + tex_color.rgb * input.color.rgb,
         tex_color.a * input.color.a,
     );
-#ifdef TONEMAP_IN_SHADER
-    color = tonemapping::tone_mapping(color, view.color_grading);
-#endif
+// #ifdef TONEMAP_IN_SHADER
+//     color = tonemapping::tone_mapping(color, view.color_grading);
+// #endif
     return color;
 }
