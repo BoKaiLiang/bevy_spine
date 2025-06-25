@@ -36,7 +36,9 @@ use crate::{
     assets::{AtlasLoader, SkeletonJsonLoader},
     materials::{SpineMaterialPlugin, DARK_COLOR_ATTRIBUTE, SHADER_HANDLE},
     rusty_spine::{
-        controller::SkeletonControllerSettings, draw::CullDirection, AnimationStateData, BoneHandle,
+        controller::SkeletonControllerSettings,
+        draw::{ColorSpace, CullDirection},
+        AnimationStateData, BoneHandle,
     },
     textures::{SpineTexture, SpineTextureCreateEvent, SpineTextureDisposeEvent, SpineTextures},
 };
@@ -633,7 +635,8 @@ fn spine_spawn(
                     .with_settings(
                         SkeletonControllerSettings::new()
                             .with_cull_direction(CullDirection::CounterClockwise)
-                            .with_premultiplied_alpha(skeleton_data_asset.premultiplied_alpha),
+                            .with_premultiplied_alpha(skeleton_data_asset.premultiplied_alpha)
+                            .with_color_space(ColorSpace::SRGB),
                     );
                     let events = spine_event_queue.0.clone();
                     controller
