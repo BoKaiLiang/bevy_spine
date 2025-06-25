@@ -636,7 +636,7 @@ fn spine_spawn(
                         SkeletonControllerSettings::new()
                             .with_cull_direction(CullDirection::CounterClockwise)
                             .with_premultiplied_alpha(skeleton_data_asset.premultiplied_alpha)
-                            .with_color_space(ColorSpace::Linear),
+                            .with_color_space(ColorSpace::SRGB),
                     );
                     let events = spine_event_queue.0.clone();
                     controller
