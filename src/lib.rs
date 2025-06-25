@@ -1090,8 +1090,9 @@ fn adjust_spine_textures(
                 address_mode_v: convert_wrap(handle_config.v_wrap),
                 ..Default::default()
             });
-            // The RGB components exported from Spine were premultiplied in nonlinear space, but need to be
-            // multiplied in linear space to render properly in Bevy.
+            // The RGB components exported from Spine were premultiplied in sRGB
+            // space. Premultiply them here without converting to linear
+            // colors.
             if handle_config.premultiplied_alpha {
                 for i in 0..(image.data.len() / 4) {
                     let mut rgba = Srgba::rgba_u8(
@@ -1110,11 +1111,9 @@ fn adjust_spine_textures(
                     } else {
                         rgba = Srgba::new(0., 0., 0., 0.);
                     }
-                    let mut linear_rgba = LinearRgba::from(rgba);
-                    linear_rgba.red *= linear_rgba.alpha;
-                    linear_rgba.green *= linear_rgba.alpha;
-                    linear_rgba.blue *= linear_rgba.alpha;
-                    rgba = Srgba::from(linear_rgba);
+                    rgba.red *= rgba.alpha;
+                    rgba.green *= rgba.alpha;
+                    rgba.blue *= rgba.alpha;
                     image.data[i * 4] = (rgba.red * 255.) as u8;
                     image.data[i * 4 + 1] = (rgba.green * 255.) as u8;
                     image.data[i * 4 + 2] = (rgba.blue * 255.) as u8;
