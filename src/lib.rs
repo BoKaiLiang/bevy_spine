@@ -607,6 +607,7 @@ fn spine_spawn(
         Entity,
         &Handle<SkeletonData>,
         Option<&Crossfades>,
+        Option<&SpineSettings>,
     )>,
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -614,7 +615,7 @@ fn spine_spawn(
     mut skeleton_data_assets: ResMut<Assets<SkeletonData>>,
     spine_event_queue: Res<SpineEventQueue>,
 ) {
-    for (mut spine_loader, spine_entity, data_handle, crossfades) in skeleton_query.iter_mut() {
+    for (mut spine_loader, spine_entity, data_handle, crossfades, spine_mesh_type) in skeleton_query.iter_mut() {
         if let SpineLoader::Loading { with_children } = spine_loader.as_ref() {
             let skeleton_data_asset =
                 if let Some(skeleton_data_asset) = skeleton_data_assets.get_mut(data_handle) {
@@ -719,7 +720,13 @@ fn spine_spawn(
                                     ))
                                     .with_children(|parent| {
                                         let mut z = 0.;
-                                        for (index, _) in controller.skeleton.slots().enumerate() {
+                                        let settings = spine_mesh_type.copied().unwrap_or_default();
+                                        let mesh_count = match settings.drawer {
+                                            SpineDrawer::Combined => controller.combined_renderables().len(),
+                                            SpineDrawer::Separated => controller.skeleton.slots().count(),
+                                            SpineDrawer::None => 0,
+                                        };
+                                        for index in 0..mesh_count {
                                             let mut mesh = Mesh::new(
                                                 PrimitiveTopology::TriangleList,
                                                 RenderAssetUsages::MAIN_WORLD
